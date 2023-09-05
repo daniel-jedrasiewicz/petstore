@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Petstore'),
 
     /*
     |--------------------------------------------------------------------------
@@ -58,6 +58,8 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL'),
+
+    'pet_api_url' => env('PET_API_URL', 'https://petstore.swagger.io/v2/pet'),
 
     /*
     |--------------------------------------------------------------------------
