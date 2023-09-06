@@ -30,6 +30,11 @@ return [
         'empty_results' => 'Brak wyników',
         'choose' => 'Wybierz',
     ],
+    'messages' => [
+        'update' => 'Zwierzak został pomyślnie zaktualizowany',
+        'delete' => 'Zwierzak został pomyślnie usunięty',
+        'create' => 'Zwierzak został pomyślnie dodany do kolejki',
+    ]
 
 
 ];
