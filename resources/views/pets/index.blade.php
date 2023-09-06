@@ -36,6 +36,7 @@
                     <th scope="col">Nazwa</th>
                     <th scope="col">Kategoria</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Akcje</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -45,7 +46,12 @@
                         <td>{{ $pet['name'] ?? 'Brak imienia' }}</td>
                         <td>{{ $pet['category']['name'] ?? 'Brak kategorii'}}</td>
                         <td>{{ $pet['status'] }}</td>
-                    </tr>
+                        <td>
+                            <a href="{{ route('pets.edit', $pet['id']) }}"
+                               class="btn btn-success btn-sm"><i class="far fa-edit"></i></a>
+{{--                            <button class="btn btn-danger btn-sm delete"--}}
+{{--                                    data-id="{{ $pet['id] }}"><i class="far fa-trash-alt"></i></button>--}}
+                        </td>
                 @empty
                     <td class="text-center" colspan="4">{{ __('Brak wyników') }}</td>
                 @endforelse
