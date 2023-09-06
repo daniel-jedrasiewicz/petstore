@@ -65,10 +65,12 @@ class PetController extends Controller
 
         return view('pets.edit', compact('pet', 'selectedTags'));
     }
+
     public function create(): View
     {
         return view('pets.create');
     }
+
     public function store(StorePetRequest $request)
     {
         $data = [
@@ -87,7 +89,7 @@ class PetController extends Controller
     {
 
         try {
-            $this->client->post(config('app.pet_api_url') .'/'. $id, [
+            $this->client->post(config('app.pet_api_url') . '/' . $id, [
                 'form_params' => [
                     'name' => $request->input('name'),
                     'status' => $request->input('status'),
@@ -99,5 +101,19 @@ class PetController extends Controller
         }
 
         return redirect()->route('pets.index')->with('status', 'Zwierzak został pomyślnie zaktualizowany');
+    }
+
+    public function delete($id)
+    {
+
+        try {
+            $this->client->request('DELETE', config('app.pet_api_url') . '/' . $id);
+
+        } catch (RequestException $ex) {
+            abort(404, 'Żądanie API nie powiodło się');
+        }
+
+        return redirect()->route('pets.index')->with('status', 'Zwierzak został pomyślnie usunięty');
+
     }
 }

@@ -18,5 +18,6 @@ Route::get('/pet', [\App\Http\Controllers\PetController::class, 'create'])->name
 Route::get('/pet/{id}/edit', [\App\Http\Controllers\PetController::class, 'edit'])->name('pets.edit');
 Route::post('/pet', [\App\Http\Controllers\PetController::class, 'store'])->name('pets.store');
 Route::post('/pet/{id}', [\App\Http\Controllers\PetController::class, 'update'])->name('pets.update');
+Route::delete('/pet/{id}', [\App\Http\Controllers\PetController::class, 'delete'])->name('pets.delete');
 
 
