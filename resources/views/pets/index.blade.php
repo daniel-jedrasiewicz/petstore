@@ -49,9 +49,14 @@
                         <td>
                             <a href="{{ route('pets.edit', $pet['id']) }}"
                                class="btn btn-success btn-sm"><i class="far fa-edit"></i></a>
-{{--                            <button class="btn btn-danger btn-sm delete"--}}
-{{--                                    data-id="{{ $pet['id] }}"><i class="far fa-trash-alt"></i></button>--}}
+                            <form class="d-inline" action="{{ route('pets.delete', $pet['id']) }}" method="POST">
+                                @method('DELETE')
+                                @csrf
+                            <button class="btn btn-danger btn-sm delete" onclick="return confirm('Czy jesteś pewien?')"
+                                    ><i class="far fa-trash-alt"></i></button>
+                            </form>
                         </td>
+                    </tr>
                 @empty
                     <td class="text-center" colspan="4">{{ __('Brak wyników') }}</td>
                 @endforelse
