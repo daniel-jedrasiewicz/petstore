@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\PetCategoryList;
-use App\Enums\PetTag;
 use App\Http\Requests\StorePetRequest;
 use App\Http\Requests\UpdatePetRequest;
 use App\Jobs\StorePetJob;

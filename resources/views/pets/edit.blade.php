@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Edycja Zwierzaka: {{ $pet['name'] }}</div>
+                    <div class="card-header">{{ __('pets.headers.pet_edit', ['name' => $pet['name']]) }}</div>
 
                     <div class="card-body">
                         <form class="needs-validation" method="POST" action="{{ route('pets.update', $pet['id']) }}" novalidate>
@@ -14,7 +14,7 @@
 
                             <div class="row mb-3">
                                 <label for="name"
-                                       class="col-md-4 col-form-label text-md-end">Nazwa <span style="color: red;">*</span></label>
+                                       class="col-md-4 col-form-label text-md-end">{{ __('pets.input.name') }} <span style="color: red;">*</span></label>
 
                                 <div class="col-md-6">
                                     <input id="name" maxlength="100" type="text"
@@ -31,7 +31,7 @@
 
                             <div class="row mb-3">
                                 <label for="status"
-                                       class="col-md-4 col-form-label text-md-end"> Status <span style="color: red;">*</span></label>
+                                       class="col-md-4 col-form-label text-md-end"> {{ __('pets.input.status') }} <span style="color: red;">*</span></label>
 
                                 <div class="col-md-6">
                                     <select class="form-control @error('status') is-invalid @enderror" name="status">
@@ -52,7 +52,7 @@
                             <div class="row mb-0">
                                 <div class="col-md-6 offset-md-4">
                                     <button type="submit" class="btn btn-primary">
-                                        Zapisz
+                                        {{ __('pets.button.save') }}
                                     </button>
                                 </div>
                             </div>

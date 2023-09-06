@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Dodawanie Zwierzaka</div>
+                    <div class="card-header">{{ __('pets.headers.pet_add') }}</div>
 
                     <div class="card-body">
                         <form class="needs-validation" method="POST" action="{{ route('pets.store') }}" novalidate>
@@ -14,7 +14,7 @@
 
                             <div class="row mb-3">
                                 <label for="name"
-                                       class="col-md-4 col-form-label text-md-end">Nazwa <span style="color: red;">*</span></label>
+                                       class="col-md-4 col-form-label text-md-end">{{ __('pets.input.name') }} <span style="color: red;">*</span></label>
 
                                 <div class="col-md-6">
                                     <input id="name" maxlength="100" type="text"
@@ -31,11 +31,11 @@
 
                             <div class="row mb-3">
                                 <label for="category"
-                                       class="col-md-4 col-form-label text-md-end">Kategoria <span style="color: red;">*</span></label>
+                                       class="col-md-4 col-form-label text-md-end">{{ __('pets.input.category') }} <span style="color: red;">*</span></label>
 
                                 <div class="col-md-6">
                                     <select class="form-control @error('category') is-invalid @enderror" name="category" id="petCategories">
-                                        <option value="" selected> Wybierz </option>
+                                        <option value="" selected> {{ __('pets.fields.choose') }} </option>
                                         @foreach(\App\Constants\PetCategory::PET_CATEGORIES as $categoryId => $categoryName)
                                             <option
                                                 value="{{ $categoryId }}" @selected(old('category', '') == $categoryId)>{{ $categoryName }}</option>
@@ -52,11 +52,11 @@
 
                             <div class="row mb-3">
                                 <label for="status"
-                                       class="col-md-4 col-form-label text-md-end"> Status <span style="color: red;">*</span></label>
+                                       class="col-md-4 col-form-label text-md-end"> {{ __('pets.input.status') }} <span style="color: red;">*</span></label>
 
                                 <div class="col-md-6">
                                     <select class="form-control @error('status') is-invalid @enderror" name="status">
-                                        <option value="" selected>Wybierz</option>
+                                        <option value="" selected>{{ __('pets.fields.choose') }}</option>
                                         @foreach(\App\Enums\PetStatus::cases() as $status)
                                             <option
                                                 value="{{ $status->value }}" @selected(old('status', '') == $status->value)>{{ $status->name }}</option>
@@ -72,7 +72,7 @@
 
                             <div class="row mb-3">
                                 <label for="status"
-                                       class="col-md-4 col-form-label text-md-end">Tagi</label>
+                                       class="col-md-4 col-form-label text-md-end">{{ __('pets.input.tags') }}</label>
                                 <div class="col-md-6">
                                     <select class="form-control multi-select" name="tags[]" multiple="true"
                                             id="petTags">
@@ -95,7 +95,7 @@
                             <div class="row mb-0">
                                 <div class="col-md-6 offset-md-4">
                                     <button type="submit" class="btn btn-primary">
-                                        Dodaj
+                                        {{ __('pets.button.add') }}
                                     </button>
                                 </div>
                             </div>
