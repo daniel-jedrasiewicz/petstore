@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [\App\Http\Controllers\PetController::class, 'index'])->name('pets.index');
-Route::resource('/pets', \App\Http\Controllers\PetController::class);
+Route::get('/pet', [\App\Http\Controllers\PetController::class, 'create'])->name('pets.create');
+Route::get('/pet/{id}/edit', [\App\Http\Controllers\PetController::class, 'edit'])->name('pets.edit');
+Route::post('/pet', [\App\Http\Controllers\PetController::class, 'store'])->name('pets.store');
+Route::post('/pet/{id}', [\App\Http\Controllers\PetController::class, 'update'])->name('pets.update');
 
 

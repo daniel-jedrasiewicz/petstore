@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\PetCategoryList;
 use App\Enums\PetTag;
 use App\Http\Requests\StorePetRequest;
+use App\Http\Requests\UpdatePetRequest;
 use App\Jobs\StorePetJob;
 use App\Services\PetService;
 use GuzzleHttp\Client;
@@ -45,6 +46,25 @@ class PetController extends Controller
         return view('pets.index', compact('pets', 'selectedStatus'));
     }
 
+    public function edit($id)
+    {
+        try {
+            $response = $this->client->request('GET', config('app.pet_api_url') . '/' . $id);
+
+        } catch (RequestException $ex) {
+            abort(404, 'Żądanie API nie powiodło się');
+        }
+
+        $pet = json_decode($response->getBody(), true);
+
+        $selectedTags = [];
+
+        if (isset($pet['tags']) && is_array($pet['tags'])) {
+            $selectedTags = array_column($pet['tags'], 'id');
+        }
+
+        return view('pets.edit', compact('pet', 'selectedTags'));
+    }
     public function create(): View
     {
         return view('pets.create');
@@ -61,5 +81,23 @@ class PetController extends Controller
         dispatch(new StorePetJob($data));
 
         return redirect()->route('pets.index')->with('status', 'Zwierzak został pomyślnie dodany do kolejki');
+    }
+
+    public function update(UpdatePetRequest $request, $id)
+    {
+
+        try {
+            $this->client->post(config('app.pet_api_url') .'/'. $id, [
+                'form_params' => [
+                    'name' => $request->input('name'),
+                    'status' => $request->input('status'),
+                ],
+            ]);
+
+        } catch (RequestException $ex) {
+            abort(404, 'Żądanie API nie powiodło się');
+        }
+
+        return redirect()->route('pets.index')->with('status', 'Zwierzak został pomyślnie zaktualizowany');
     }
 }
