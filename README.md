@@ -7,7 +7,7 @@ Laravel Petstore API Client to projekt stworzony w oparciu o framework Laravel, 
 Przed rozpoczęciem pracy nad projektem upewnij się, że masz zainstalowane następujące narzędzia:
 - PHP (zalecana wersja 8.0 lub nowsza)
 - Composer
-- 
+  
 ## Instalacja
 Sklonuj repozytorium do swojego lokalnego środowiska:
 
