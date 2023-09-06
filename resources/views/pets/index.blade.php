@@ -3,12 +3,13 @@
 @section('content')
 
     <div class="container">
+        @include('helpers.flash-messages')
         <div class="row">
             <div class="col-6">
                 <h1><i class="fa-solid fa-paw"></i> Lista zwierzaków </h1>
             </div>
             <div class="col-6">
-                <a class="float-end" href="#">
+                <a class="float-end" href="{{ route('pets.create') }}">
                     <button type="button" class=" btn btn-primary"><i class="far fa-plus"></i> Dodaj</button>
                 </a>
             </div>
@@ -18,9 +19,11 @@
             <label for="status">Status:</label>
             <form action="{{ route('pets.index') }}" method="GET">
                 <select id="status" name="status" class="form-control" onchange="this.form.submit()">
-                    <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>Oczekujący</option>
-                    <option value="available" {{ $status === 'available' ? 'selected' : '' }}>Dostępny</option>
-                    <option value="sold" {{ $status === 'sold' ? 'selected' : '' }}>Sprzedany</option>
+                    @foreach(\App\Enums\PetStatus::cases() as $status)
+                        <option value="{{ $status->value }}" {{ $selectedStatus === $status->value ? 'selected' : '' }}>
+                            {{ $status->name }}
+                        </option>
+                    @endforeach
                 </select>
             </form>
         </div>
@@ -48,7 +51,7 @@
                 @endforelse
                 </tbody>
             </table>
-            {{ $pets->appends(['status' => $status])->links() }}
+            {{ $pets->appends(['status' => $selectedStatus])->links() }}
         </div>
     </div>
 

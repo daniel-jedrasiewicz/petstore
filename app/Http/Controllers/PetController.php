@@ -2,29 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PetCategoryList;
+use App\Enums\PetTag;
+use App\Http\Requests\StorePetRequest;
+use App\Jobs\StorePetJob;
 use App\Services\PetService;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PetController extends Controller
 {
-    public $petService;
+    protected $petService;
+    protected $client;
 
     public function __construct(PetService $petService)
     {
         $this->petService = $petService;
+        $this->client = new Client();
     }
 
     public function index(Request $request): View
     {
-        $status = $request->input('status', 'available');
+        $selectedStatus = $request->input('status', 'available');
 
         try {
-            $client = new \GuzzleHttp\Client();
-            $response = $client->request('GET', config('app.pet_api_url').'/findByStatus', [
+            $response = $this->client->request('GET', config('app.pet_api_url') . '/findByStatus', [
                 'query' => [
-                    'status' => $status,
+                    'status' => $selectedStatus,
                 ],
             ]);
 
@@ -36,8 +42,24 @@ class PetController extends Controller
 
         $pets = $this->petService->paginate($data, $request);
 
-        return view('pets.index', compact('pets', 'status'));
+        return view('pets.index', compact('pets', 'selectedStatus'));
     }
 
+    public function create(): View
+    {
+        return view('pets.create');
+    }
+    public function store(StorePetRequest $request)
+    {
+        $data = [
+            'name' => $request->input('name'),
+            'category' => json_decode($request->input('categoriesData'))[0],
+            'status' => $request->input('status'),
+            'tags' => json_decode($request->input('tagsData'), true),
+        ];
 
+        dispatch(new StorePetJob($data));
+
+        return redirect()->route('pets.index')->with('status', 'Zwierzak został pomyślnie dodany do kolejki');
+    }
 }
