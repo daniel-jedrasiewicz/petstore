@@ -77,7 +77,7 @@
                                     <select class="form-control multi-select" name="tags[]" multiple="true"
                                             id="petTags">
                                         @foreach(\App\Constants\PetTag::PET_TAGS as $tagId => $tagName)
-                                            <option value="{{ $tagId }}">{{ $tagName }}</option>
+                                            <option value="{{ $tagId }}" {{ in_array($tagId, old('tags', $selectedTags)) ? 'selected' : '' }}>{{ $tagName }}</option>
                                         @endforeach
                                     </select>
 
@@ -111,6 +111,9 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
+            $('#tagsData').val('{{ old('tagsData') }}');
+            $('#categoriesData').val('{{ old('categoriesData') }}');
+
             $(".multi-select").select2({
                 placeholder: " Select tag",
                 tags: true,
