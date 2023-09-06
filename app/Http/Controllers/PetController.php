@@ -15,11 +15,13 @@ class PetController extends Controller
 {
     protected $petService;
     protected $client;
+    protected $apiBaseUrl;
 
     public function __construct(PetService $petService)
     {
         $this->petService = $petService;
         $this->client = new Client();
+        $this->apiBaseUrl = config('app.pet_api_url');
     }
 
     public function index(Request $request): View
@@ -27,33 +29,32 @@ class PetController extends Controller
         $selectedStatus = $request->input('status', 'available');
 
         try {
-            $response = $this->client->request('GET', config('app.pet_api_url') . '/findByStatus', [
+            $response = $this->client->request('GET', $this->apiBaseUrl . '/findByStatus', [
                 'query' => [
                     'status' => $selectedStatus,
                 ],
             ]);
 
         } catch (RequestException $ex) {
-            abort(404, 'Żądanie API nie powiodło się');
+            abort(404, 'API request failed');
         }
 
-        $data = json_decode($response->getBody(), true);
+        $data = $this->parseJsonResponse($response);
 
         $pets = $this->petService->paginate($data, $request);
 
         return view('pets.index', compact('pets', 'selectedStatus'));
     }
-
-    public function edit($id)
+    public function edit(int $id)
     {
         try {
-            $response = $this->client->request('GET', config('app.pet_api_url') . '/' . $id);
+            $response = $this->client->request('GET', $this->apiBaseUrl . '/' . $id);
 
         } catch (RequestException $ex) {
-            abort(404, 'Żądanie API nie powiodło się');
+            abort(404, 'API request failed');
         }
 
-        $pet = json_decode($response->getBody(), true);
+        $pet = $this->parseJsonResponse($response);
 
         $selectedTags = [];
 
@@ -63,14 +64,12 @@ class PetController extends Controller
 
         return view('pets.edit', compact('pet', 'selectedTags'));
     }
-
     public function create(Request $request): View
     {
         return view('pets.create', [
             'selectedTags' => $request->input('tags', []),
         ]);
     }
-
     public function store(StorePetRequest $request)
     {
         $tagsData = $request->input('tagsData');
@@ -78,21 +77,20 @@ class PetController extends Controller
 
         $data = [
             'name' => $request->input('name'),
-            'category' => json_decode(html_entity_decode($categoriesData), true)[0],
+            'category' => json_decode(html_entity_decode($categoriesData))[0] ?? null,
             'status' => $request->input('status'),
             'tags' =>json_decode(html_entity_decode($tagsData), true),
         ];
 
-        dispatch(new StorePetJob($data));
+        dispatch(new StorePetJob($data, $this->apiBaseUrl));
 
-        return redirect()->route('pets.index')->with('status', 'Zwierzak został pomyślnie dodany do kolejki');
+        return redirect()->route('pets.index')->with('status', __('pets.messages.create'));
     }
-
-    public function update(UpdatePetRequest $request, $id)
+    public function update(UpdatePetRequest $request, int $id)
     {
 
         try {
-            $this->client->post(config('app.pet_api_url') . '/' . $id, [
+            $this->client->post($this->apiBaseUrl . '/' . $id, [
                 'form_params' => [
                     'name' => $request->input('name'),
                     'status' => $request->input('status'),
@@ -100,23 +98,31 @@ class PetController extends Controller
             ]);
 
         } catch (RequestException $ex) {
-            abort(404, 'Żądanie API nie powiodło się');
+            abort(404, 'API request failed');
         }
 
-        return redirect()->route('pets.index')->with('status', 'Zwierzak został pomyślnie zaktualizowany');
+        return redirect()->route('pets.index')->with('status', __('pets.messages.update'));
     }
-
-    public function delete($id)
+    public function delete(int $id)
     {
 
         try {
-            $this->client->request('DELETE', config('app.pet_api_url') . '/' . $id);
+            $this->client->request('DELETE', $this->apiBaseUrl . '/' . $id);
 
         } catch (RequestException $ex) {
-            abort(404, 'Żądanie API nie powiodło się');
+            abort(404, 'API request failed');
         }
 
-        return redirect()->route('pets.index')->with('status', 'Zwierzak został pomyślnie usunięty');
+        return redirect()->route('pets.index')->with('status', __('pets.messages.delete'));
+    }
+    private function parseJsonResponse($response)
+    {
+        $data = json_decode($response->getBody(), true);
 
+        if (empty($data)) {
+            abort(404, 'API returned empty data');
+        }
+
+        return $data;
     }
 }
