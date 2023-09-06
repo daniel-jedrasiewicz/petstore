@@ -64,18 +64,23 @@ class PetController extends Controller
         return view('pets.edit', compact('pet', 'selectedTags'));
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('pets.create');
+        return view('pets.create', [
+            'selectedTags' => $request->input('tags', []),
+        ]);
     }
 
     public function store(StorePetRequest $request)
     {
+        $tagsData = $request->input('tagsData');
+        $categoriesData =$request->input('categoriesData');
+
         $data = [
             'name' => $request->input('name'),
-            'category' => json_decode($request->input('categoriesData'))[0],
+            'category' => json_decode(html_entity_decode($categoriesData), true)[0],
             'status' => $request->input('status'),
-            'tags' => json_decode($request->input('tagsData'), true),
+            'tags' =>json_decode(html_entity_decode($tagsData), true),
         ];
 
         dispatch(new StorePetJob($data));
